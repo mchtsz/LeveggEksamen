@@ -139,6 +139,9 @@ app.post("/login", async (req, res) => {
       case Role.STUDENT:
         res.redirect("/student");
         break;
+      case Role.GUEST:
+        res.redirect("/application");
+        break;
     }
   } else {
     res.redirect("/");
@@ -155,12 +158,33 @@ app.post("/register", async (req, res) => {
     .replace(/å/g, "aa");
   lastname = lastname.replace(/æ/g, "e").replace(/ø/g, "o").replace(/å/g, "aa");
 
-  const user = await prisma.users.create({
+  let username =
+    firstname.substring(0, firstname.length / 2) +
+    lastname.substring(lastname.length / 2);
+
+  // Check if username already exists
+  let user = await prisma.users.findFirst({
+    where: {
+      username: username,
+    },
+  });
+
+  let counter = 1;
+  while (user) {
+    // If username exists, append an incrementing number
+    username = username + counter;
+    user = await prisma.users.findFirst({
+      where: {
+        username: username,
+      },
+    });
+    counter++;
+  }
+
+  user = await prisma.users.create({
     data: {
       mail: mail,
-      username:
-        firstname.substring(0, firstname.length / 2) +
-        lastname.substring(lastname.length / 2),
+      username: username,
       password: crypto.createHash("sha256").update(password).digest("hex"),
       role: Role.GUEST,
       personal: {

@@ -1,13 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/admin.css">
-    <link rel="stylesheet" href="/global.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/admin.css" />
+    <link rel="stylesheet" href="/global.css" />
     <title>Application</title>
-</head>
-<body data-darkmode>
-    <h1>Welcome, you managed to login</h1>
-</body>
+  </head>
+  <body data-darkmode>
+    <form action="/applicationAnswer" id="applicationForm">
+      <h1>Er du intressert i å være elev hos oss?</h1>
+
+      <div class="checkboxGroup">
+        <input type="checkbox" name="yes" id="yesbox" />
+        <label for="yesbox">Ja</label>
+
+        <input type="checkbox" name="no" id="nobox" />
+        <label for="nobox">Nei</label>
+      </div>
+
+      <input type="submit" value="Submit" />
+    </form>
+
+    <script>
+        // Get the checkboxes
+        let checkbox1 = document.getElementById("yesbox");
+        let checkbox2 = document.getElementById("nobox");
+  
+        // Add event listeners
+        checkbox1.addEventListener("change", function () {
+          if (this.checked) {
+            checkbox2.checked = false;
+          }
+        });
+  
+        checkbox2.addEventListener("change", function () {
+          if (this.checked) {
+            checkbox1.checked = false;
+          }
+        });
+      </script>
+  </body>
 </html>

@@ -84,3 +84,55 @@ form a {
 form a:hover {
     transform: scale(1.1);
 }
+
+form input[type="checkbox"] {
+    display: none;
+}
+
+form input[type="checkbox"] + label {
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    display: inline-block;
+    color: #fff;
+    font-size: 20px;
+}
+
+form input[type="checkbox"] + label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 25px;
+    height: 25px;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    background-color: transparent;
+}
+
+form input[type="checkbox"]:checked + label::after {
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 5px;
+    width: 8px;
+    height: 14px;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+#applicationForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;   
+    align-items: center; 
+    padding-top: 25vh;
+}
+
+.checkboxGroup {
+    display: flex;
+    gap: 3rem;
+    padding: 2rem;
+}
