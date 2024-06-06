@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/global.css" />
+    <link rel="stylesheet" href="/admin.css">
+    <title>Document</title>
+  </head>
+  <body data-darkmode>
+    <form action="/register" method="POST" id="registerForm">
+      <h1>LAG BRUKER</h1>
+      <input type="text" name="firstname" placeholder="fornavn" />
+      <input type="text" name="lastname" placeholder="etternavn" />
+      <input type="text" name="address" placeholder="addresse" />
+      <input type="number" name="phone" placeholder="telefon" />
+      <input type="mail" name="mail" placeholder="example@mail.com" />
+      <input type="password" name="password" placeholder="passord" />
+      <input type="submit" />
+      <a href="/login">Har du allerede en bruker?</a>
+    </form>
+  </body>
+</html>

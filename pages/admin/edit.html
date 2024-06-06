@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/global.css" />
+    <link rel="stylesheet" href="/admin.css" />
+    <title>edit document</title>
+    <style>
+      form {
+        display: inline-block;
+        padding: 0;
+      }
+
+      td a {
+        transition: 0.2s ease-in-out;
+        text-decoration: none;
+        color: #000;
+      }
+    </style>
+
+    <script defer>
+      const fetchData = async () => {
+        try {
+          const res = await fetch("http://localhost:3000/api/users");
+          const data = await res.json();
+
+          console.log(data)
+          const createRow = (user, bodyId, editUrl) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td class="id">${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.personal.firstname}</td>
+                <td>${user.personal.lastname}</td>
+                <td>${user.mail}</td>
+                <td>${user.role}</td>
+                <td>
+                <a href="${editUrl}/${user.id}" class="btn btn-warning" style="border-radius: .5rem; margin-right: 2.5%; padding: 1rem; border: 1px solid #fff;">✏️</a>
+                <form class="form-class" action="/api/deleteUser/${user.id}" method="POST">
+                    <button class="btn btn-danger">🗑️</button>
+                </form>
+                </td>
+            `;
+            document.getElementById(bodyId).appendChild(tr);
+          };
+
+          data.forEach((user) => createRow(user, "userTable", "/admin/edit"));
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+
+      fetchData();
+    </script>
+  </head>
+  <body data-darkmode>
+    <a href="./" class="return">Go back</a>
+    <table>
+      <thead id="thead">
+        <tr>
+          <th>#</th>
+          <th>Brukernavn</th>
+          <th>Fornavn</th>
+          <th>Etternavn</th>
+          <th>Mail</th>
+          <th>Rolle</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </body>
+</html>

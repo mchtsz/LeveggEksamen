@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "start": "cls && tsx watch app.ts",
+    "fix": "npm i @types/node && npm i express && npm i @types/express && npm i @prisma/client"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.15.0",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.2",
+    "cookie-parser": "^1.4.6",
+    "crypto": "^1.0.1",
+    "express": "^4.19.2",
+    "path": "^0.12.7"
+  }
+}

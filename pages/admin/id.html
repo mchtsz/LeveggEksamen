@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/global.css" />
+    <link rel="stylesheet" href="/admin.css" />
+    <title>Edit user</title>
+    <script>
+      const id = window.location.pathname.split("/").pop();
+      fetch("/api/getUser/" + id)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data)
+          const form = document.querySelector("form");
+          form.innerHTML = `
+            <input type="hidden" name="token" value="${data.token}">
+            <input type="text" name="id" value="${data.id}" readonly>
+            <input type="text" name="firstname" value="${data.personal.firstname}">
+            <input type="text" name="lastname" value="${data.personal.lastname}">
+            <input type="text" name="mail" value="${data.mail}">
+            <input type="text" name="password" placeholder="edit password">
+            <select name="role">
+                <option>-- Choose a role --</option>
+                <option value="STUDENT" ${
+                  data.role === "STUDENT" ? "selected" : ""
+                }>STUDENT</option>
+                <option value="TEACHER" ${
+                  data.role === "TEACHER" ? "selected" : ""
+                }>TEACHER</option>
+                <option value="ADMIN" ${
+                  data.role === "ADMIN" ? "selected" : ""
+                }>ADMIN</option>
+            </select>
+            <input type="submit"></input>
+        `;
+        });
+    </script>
+  </head>
+  <body>
+    <main data-darkmode>
+      <form action="/api/updateUser/" method="POST"></form>
+    </main>
+  </body>
+</html>

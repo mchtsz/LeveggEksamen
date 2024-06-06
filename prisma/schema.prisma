@@ -1,0 +1,38 @@
+// 57b
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:Passord01@localhost:5432/"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+model Users {
+  id       Int          @id @default(autoincrement())
+  username String       @unique
+  mail     String       @unique
+  password String
+  token    String       @unique @default(cuid())
+  role     Role
+  personal ContactInfo?
+}
+
+model ContactInfo {
+  id        Int    @id @default(autoincrement())
+  firstname String
+  lastname  String
+  phone     String
+  address   String
+  userID    Int    @unique
+  user      Users  @relation(fields: [userID], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+  GUEST
+}
