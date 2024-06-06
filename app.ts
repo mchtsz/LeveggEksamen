@@ -1,5 +1,5 @@
 import express from "express";
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient, Role, Status } from "@prisma/client";
 import crypto from "crypto";
 import cookieParser from "cookie-parser";
 
@@ -43,20 +43,7 @@ app.use(async (req, res, next) => {
 
   // if they ask for admin path and they're not admin, redirect to welcome
   if (adminPaths.includes(path) && !Role.ADMIN) {
-    switch (user.role) {
-      case Role.TEACHER:
-        res.redirect("/teacher");
-        break;
-      case Role.STUDENT:
-        res.redirect("/student");
-        break;
-      case Role.GUEST:
-        res.redirect("/application");
-        break;
-      default:
-        res.redirect("/"); // Redirect to default path if the user's role is not specified in the switch statement
-        break;
-    }
+    return res.redirect("/");
   }
 
   next(); // if everything works let them through
@@ -206,6 +193,28 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post("/applicationAnswer", async (req, res) => {
+  let { status, token }: {
+    status: Status,
+    token: string
+  } = req.body;
+
+  const user = await prisma.users.update({
+    where: {
+      token: token,
+    },
+    data: {
+      application: {
+        create: {
+          status: status,
+        },
+      },
+    },
+  });
+
+  res.send("Application has been sent");
+});
+
 const pageRoutes = {
   application: (req, res) => {
     res.sendFile(__dirname + "/pages/application.html");
@@ -251,6 +260,74 @@ const apiRoutes = {
     });
 
     res.json(user);
+  },
+  getUserByToken: async (req, res) => {
+    const token = req.cookies.token;
+    const user = await prisma.users.findFirst({
+      where: {
+        token: token,
+      },
+      include: {
+        personal: true,
+      },
+    });
+
+    res.json(user);
+  },
+  getApplications: async (req, res) => {
+    const applications = await prisma.application.findMany({
+      where: {
+        user: {
+          role: 'GUEST'
+        }
+      },
+      include: {
+        user: {
+          include: {
+            personal: true,
+          },
+        }
+      }
+    });
+  
+    res.json(applications);
+  },
+  acceptApplication: async (req, res) => {
+    const id = parseInt(req.params.id);
+    const application = await prisma.application.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: Status.APPROVED,
+        user: {
+          update: {
+            role: Role.STUDENT,
+          },
+        },
+        }
+      },
+    );
+
+    res.redirect("/admin/manage/");
+  },
+  rejectApplication: async (req, res) => {
+    const id = parseInt(req.params.id);
+    const application = await prisma.application.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: Status.REJECTED,
+        user: {
+          update: {
+            role: Role.GUEST,
+          },
+        },
+        }
+      })
+
+    res.redirect("/admin/manage/");
   },
   createUser: async (req, res) => {
     const { firstname, lastname, mail, address, phone, password, role } =
@@ -333,10 +410,15 @@ app.get("/application", pageRoutes.application);
 app.get("/login", pageRoutes.login);
 app.get("/admin/edit", pageRoutes.adminEdit);
 app.get("/admin/create", pageRoutes.adminCreate);
-app.get("/api/users", apiRoutes.getUsers);
 app.get("/admin/edit/:id", pageRoutes.adminEditID);
 app.get("/admin/manage/:id", pageRoutes.adminManageID);
+
+app.get("/api/applications", apiRoutes.getApplications);
+app.get("/api/users", apiRoutes.getUsers);
 app.get("/api/getUser/:id", apiRoutes.getSpecificUser);
+app.get("/api/getUserByToken", apiRoutes.getUserByToken);
+app.get("/api/applications/accept/:id", apiRoutes.acceptApplication);
+app.get("/api/applications/deny/:id", apiRoutes.rejectApplication);
 
 // post requests
 app.post("/api/createUser", apiRoutes.createUser);

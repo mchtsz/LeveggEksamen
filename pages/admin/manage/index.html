@@ -33,10 +33,11 @@
             const tr = document.createElement("tr");
             tr.innerHTML = `
             <td>${application.id}</td>
-            <td>${application.username}</td>
-            <td>${application.email}</td>
-            <td>${application.phone}</td>
-            <td>${application.address}</td>
+            <td>${application.user.username}</td>
+            <td>${application.user.mail}</td>
+            <td>${application.user.personal.phone}</td>
+            <td>${application.user.personal.address}</td>
+            <td>${application.status}</td>
             <td>
                 <a href="${rejectUrl}/${application.id}">❌</a>
                 <a href="${acceptUrl}/${application.id}">🟢</a>
@@ -67,6 +68,7 @@
           <th>Phone</th>
           <th>Adress</th>
           <th>Action</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody id="applicationTable"></tbody>

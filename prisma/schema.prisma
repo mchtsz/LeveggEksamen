@@ -11,13 +11,14 @@ generator client {
 }
 
 model Users {
-  id       Int          @id @default(autoincrement())
-  username String       @unique
-  mail     String       @unique
-  password String
-  token    String       @unique @default(cuid())
-  role     Role
-  personal ContactInfo?
+  id          Int          @id @default(autoincrement())
+  username    String       @unique
+  mail        String       @unique
+  password    String
+  token       String       @unique @default(cuid())
+  role        Role
+  personal    ContactInfo?
+  application Application?
 }
 
 model ContactInfo {
@@ -28,6 +29,19 @@ model ContactInfo {
   address   String
   userID    Int    @unique
   user      Users  @relation(fields: [userID], references: [id], onDelete: Cascade)
+}
+
+model Application {
+  id     Int    @id @default(autoincrement())
+  status Status
+  userID Int    @unique
+  user   Users  @relation(fields: [userID], references: [id])
+}
+
+enum Status {
+  APPROVED
+  PENDING
+  REJECTED
 }
 
 enum Role {
